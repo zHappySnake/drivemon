@@ -34,8 +34,12 @@ fi
 # Update version in Cargo.toml
 sed -i "s/^version = \".*\"/version = \"$VERSION\"/" Cargo.toml
 
-# Commit version bump
-git commit Cargo.toml -m "Bump version to $VERSION"
+# Commit version bump only if the version changed
+if git diff --quiet -- Cargo.toml; then
+    echo "Cargo.toml is already at version $VERSION; skipping version bump commit."
+else
+    git commit Cargo.toml -m "Bump version to $VERSION"
+fi
 
 # Create and push tag
 git tag "$TAG"
